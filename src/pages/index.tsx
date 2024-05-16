@@ -47,7 +47,7 @@ export default function Home() {
           <div className='flex flex-col gap-25px mb-[67px]'>
             {categoriesData?.categories?.map(categoryData => {
               return(
-                <UserInterest category={categoryData} />
+                <UserInterest key={categoryData.id} category={categoryData} />
               )
             })}
         

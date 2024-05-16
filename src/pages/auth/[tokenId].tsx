@@ -31,7 +31,7 @@ const OtpPage = () => {
   const {mutate : otpVerifyMutate} = api.user.verifyOtp.useMutation({
       onSuccess(data, variables, context) {
         setToken(data?.token)
-        router.push("/")
+        router.push("/").catch(e => toast.error("Invalid or expired token"))
       },
       onError(error, code){
         toast.error(error.message);
@@ -51,8 +51,8 @@ const OtpPage = () => {
 
     function obscureEmail(email: string): string {
       const parts: string[] = email.split('@');
-      const username: string = parts[0] || "";
-      const domain: string = parts[1] || "";
+      const username: string = parts[0] ?? "";
+      const domain: string = parts[1] ?? "";
       
       let obscuredUsername: string;
       if (username.length > 3) {
@@ -66,12 +66,15 @@ const OtpPage = () => {
 
     const handleOtpJwtToken = (token :string) => {
       try{
-       const {email} = jwt.decode(token) as EmailJwtPayload
-       setUserEmail(obscureEmail(email))
+       const decoded = jwt.decode(token) as EmailJwtPayload | null;
+       if (!decoded) {
+        throw new Error("Invalid or expired token");
+      }
+       setUserEmail(obscureEmail(decoded.email))
       }catch(err){
         console.log("JWT for OTP Error - ",err)
         //todo: throw toast saying token expired or send state via route
-        router.push('/signup')
+        router.push('/signup').catch(e => toast.error("Invalid or expired token"))
       }
     }
 

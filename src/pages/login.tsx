@@ -15,7 +15,7 @@ export type LoginErrors = {
   password?: string;
 };
 
-const login = () => {
+const Login = () => {
 
   const router = useRouter()
 
@@ -44,9 +44,6 @@ const [submitErrors, setSubmitErrors] = useState("")
       setSubmitErrors(error.message)
       setLoginFormErrors({})
       setLoginFormValues(initialValues)
-    },
-    onSettled(){
-      
     }
   })
 
@@ -73,7 +70,7 @@ const [submitErrors, setSubmitErrors] = useState("")
 
  
 
-  const submitLoginForm = async () => {
+  const submitLoginForm = () => {
     const encryptedPswd = encryptDataRSA(loginFormValues?.password)
     const _loginFormValues = {...loginFormValues, password: encryptedPswd}
     loginMutate(_loginFormValues)
@@ -105,7 +102,7 @@ const [submitErrors, setSubmitErrors] = useState("")
                 {isPending ? <span className="loader white w-5 h-5 "></span> :  <p className='text-center font-medium'> LOGIN</p>} 
             </button>
           <div className='bg-black h-px w-full mt-[29px] mb-[31px]'></div>
-          <p className='text-center mb-[51px]'>Don't have an Account? <span onClick={()=>router.push("/signup")} className='font-medium cursor-pointer hover:underline'>SIGN UP</span> </p>
+          <p className='text-center mb-[51px]'>Don&apos;t have an Account? <span onClick={()=>router.push("/signup")} className='font-medium cursor-pointer hover:underline'>SIGN UP</span> </p>
         </div>
       </div>
       
@@ -113,4 +110,4 @@ const [submitErrors, setSubmitErrors] = useState("")
   )
 }
 
-export default login
+export default Login

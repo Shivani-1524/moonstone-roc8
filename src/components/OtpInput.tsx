@@ -1,5 +1,4 @@
-import React, {useMemo, Fragment, useRef, useEffect, useState} from 'react'
-import { RE_DIGIT } from '~/helpers';
+import React, {Fragment, useRef, useEffect, useState} from 'react'
 
 export type Props = {
     otp: string[];
@@ -8,7 +7,7 @@ export type Props = {
     submitForm: () => void;
   };
 
-  let currentOtpIndex:number = 0
+let currentOtpIndex = 0
 
 const OtpInput = ({ otp, valueLength, onChange, submitForm }: Props) => {
 
@@ -54,11 +53,11 @@ const OtpInput = ({ otp, valueLength, onChange, submitForm }: Props) => {
         e.preventDefault();
         const pastedData = e.clipboardData.getData('Text');
         const numbers = pastedData.replace(/\D/g, ''); // Remove non-digit characters
-        let newOtp = [...otp];
+        const newOtp = [...otp];
         let newIndex = index;
 
         for (let i = 0; i < numbers.length && newIndex < valueLength; i++, newIndex++) {
-            newOtp[newIndex] = numbers[i] || ''; // Fallback to empty string if undefined
+            newOtp[newIndex] = numbers[i] ?? ''; // Fallback to empty string if undefined
         }
 
         onChange(newOtp);

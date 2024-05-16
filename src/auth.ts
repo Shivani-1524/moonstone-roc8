@@ -1,4 +1,4 @@
-import { jwtVerify, SignJWT, jwtDecrypt } from "jose";
+import { JWTPayload, jwtVerify, SignJWT } from "jose";
 import jwt from 'jsonwebtoken';
 
 const secretKey = process.env.JWT_SECRET;
@@ -6,7 +6,7 @@ const jwtAccessToken = process.env.ACCESS_TOKEN_SECRET;
 const key = new TextEncoder().encode(secretKey);
 console.log(secretKey, jwtAccessToken, "bruh")
 
-interface UserJwtPayload {
+export interface UserJwtPayload {
     id: string
     jti: string
     iat: number
@@ -19,7 +19,8 @@ export interface EmailJwtPayload {
     exp: number
   }
 
-export async function decryptJWT(input: string): Promise<any> {
+
+export async function decryptJWT(input: string): Promise<UserJwtPayload> {
     try{
       console.log("in dec jet",secretKey)
       console.log("in key jwt ",key)
@@ -27,7 +28,7 @@ export async function decryptJWT(input: string): Promise<any> {
       const { payload } = await jwtVerify(input, key, {
         algorithms: ["HS256"],
       });
-      return payload as any as UserJwtPayload;
+      return payload as unknown as UserJwtPayload;
     }
     catch(err){
       //redirect to login and show error toast
@@ -36,15 +37,15 @@ export async function decryptJWT(input: string): Promise<any> {
     }
   }
 
-  export async function encryptJWT(payload: any, expiryTime: string) {
-    return await new SignJWT(payload)
+  export async function encryptJWT(payload: UserJwtPayload | {id : string}, expiryTime: string) {
+    return await new SignJWT(payload as JWTPayload)
       .setProtectedHeader({ alg: "HS256" })
       .setIssuedAt()
       .setExpirationTime(expiryTime)
       .sign(key);
   }
 
-  export function encryptHs256SignJWT(payload: any, expiryTime: string){
+  export function encryptHs256SignJWT(payload: { email : string}, expiryTime: string){
     if(!jwtAccessToken){
       throw new Error("Token has Expired")
     }
@@ -52,9 +53,10 @@ export async function decryptJWT(input: string): Promise<any> {
 
   }
 
-  export async function verifyHs256SignJWT(token: any){
-    if(!jwtAccessToken){
-      throw new Error("Token has Expired")
-    }
-    return jwt.verify(token, jwtAccessToken ) as any as EmailJwtPayload
-  }
+  // export async function verifyHs256SignJWT(token: any){
+  //   if(!jwtAccessToken){
+  //     throw new Error("Token has Expired")
+  //   }
+  //   return jwt.verify(token, jwtAccessToken ) as any as EmailJwtPayload
+  // }
+  

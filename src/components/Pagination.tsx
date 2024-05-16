@@ -1,10 +1,10 @@
 import React from 'react';
 import { usePagination, DOTS } from '../utils/hooks/usePagination';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 // import './pagination.scss';
 
 interface PaginationProps {
-  onPageChange: (page: number) => void;
+  onPageChange?: (page: number) => void;
   siblingCount?: number;
   currentPage: number;
   totalPages: number;
@@ -13,7 +13,6 @@ interface PaginationProps {
 
 const Pagination = (props: PaginationProps) => {
   const {
-    onPageChange,
     siblingCount = 1,
     currentPage,
     totalPages,
@@ -54,10 +53,10 @@ const Pagination = (props: PaginationProps) => {
     router.push(`?page=${totalPages}`)
   };
 
-  let lastPage = paginationRange[paginationRange.length - 1];
+  const lastPage = paginationRange[paginationRange.length - 1];
   return (
     <div
-      className={`flex items-center gap-3 font-medium text-xl text-[#acacac]  ${className || ''}`}
+      className={`flex items-center gap-3 font-medium text-xl text-[#acacac]  ${className ?? ''}`}
     >
        {/* Left navigation arrow */}
    
@@ -73,16 +72,17 @@ const Pagination = (props: PaginationProps) => {
       >
         {"<"}
       </p>
-      {paginationRange.map(pageNumber => {
+      {paginationRange.map((pageNumber: number | string, idx : number) => {
          
         // If the pageItem is a DOT, render the DOTS unicode character
         if (pageNumber === DOTS) {
-          return <p>...</p>;
+          return <p key={idx}>...</p>;
         }
 		
         // Render our Page Pills
         return (
           <p
+            key={idx}
             className={`${pageNumber === currentPage ? 'text-black' : ''} hover:text-black cursor-pointer`}
             onClick={() =>  router.push(`?page=${pageNumber}`)}
           >

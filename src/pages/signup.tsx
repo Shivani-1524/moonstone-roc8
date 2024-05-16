@@ -9,7 +9,7 @@ import { validateForm, encryptDataRSA, PasswordRegex } from '~/helpers';
 import { useRouter } from 'next/navigation'
 import {toast} from "react-toastify";
 
-const signup = () => {
+const Signup = () => {
   const router = useRouter()
     type SignupForm = {
       email: string;
@@ -69,7 +69,7 @@ const signup = () => {
 }
 
   
-  const submitSignupForm = async () => {
+  const submitSignupForm = () => {
     const encryptedPswd = encryptDataRSA(signupFormValues?.password)
     const _signupFormValues = {...signupFormValues, password: encryptedPswd}
     console.log(_signupFormValues, "log")
@@ -112,4 +112,4 @@ const signup = () => {
   )
 }
 
-export default signup
+export default Signup

@@ -5,7 +5,7 @@ import {addMinutesToDate, decryptDataRSA, formatDateTime} from "../utils/helpers
 import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
 import { TRPCError } from "@trpc/server";
-import { encryptJWT, encryptHs256SignJWT, verifyHs256SignJWT, EmailJwtPayload } from "~/auth"; 
+import { encryptJWT, encryptHs256SignJWT, EmailJwtPayload } from "~/auth"; 
 import { loginUserSchema, createUserSchema, otpVerifySchema } from "~/types";
 import { api, getBaseUrl } from "~/utils/api";
 import cookie from 'cookie';
@@ -66,7 +66,7 @@ export const usersRouter = createTRPCRouter({
       console.log("I AM PAST 70");
 
 
-      if(isUserPresent && isUserPresent?.emailVerified){
+      if(isUserPresent?.emailVerified){
         throw new TRPCError({code: "BAD_REQUEST", message: "Account Already Exists please login"})
       }
       // else if(isUserPresent && isUserPresent?.otpAttemptCounter > 15){
@@ -118,8 +118,12 @@ export const usersRouter = createTRPCRouter({
         });
       }                
 
+      if(!isUserPresent?.email && !newUser?.email){
+        throw new TRPCError({code: "INTERNAL_SERVER_ERROR", message: "Unexpected Error Ocurred while creating the user"})
+      }
+
       //update existing entry
-      const token = encryptHs256SignJWT({email: isUserPresent?.email || newUser?.email}, JWT_EMAIL_VERIFICATION_EXPIRY)
+      const token = encryptHs256SignJWT({email: isUserPresent?.email ?? newUser?.email ?? ""}, JWT_EMAIL_VERIFICATION_EXPIRY)
       const url = `${getBaseUrl()}/auth/${token}`
 
       const currentMailOptions = {...mailOptions, 

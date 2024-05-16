@@ -38,7 +38,7 @@ export const cookieOptions = {
 export const mailOptions = {
     from: {
       name: "Moonstone",
-      address: EMAIL_FROM_ADDRESS || "default@example.com" 
+      address: EMAIL_FROM_ADDRESS ?? "default@example.com" 
     },
   }
   

@@ -40,11 +40,9 @@ export const categoriesRouter = createTRPCRouter({
   }))
   .query( async ({ctx, input}) => {
     console.log("CURR USER", ctx.user.userId)
-    const userId = ctx.user.userId
+    const userId = ctx.user.userId;
     const { page, limit } = input;
     const skip = (page - 1) * limit;
-
-    console.log("SKIP", skip, page, limit)
 
     const [userCategories, totalCategories] = await ctx.db.$transaction([
       ctx.db.category.findMany({
@@ -69,22 +67,8 @@ export const categoriesRouter = createTRPCRouter({
       ctx.db.category.count()
     ]);
 
-      console.log(userCategories, "the user categories log")
-      // return [{title: "meow", id: '101'}]
-
-      // return [{title: "meow", id: '101'}]
-
-      // return userCategories.map(category => {
-      //  let isInterested = category?.user?.length ? category.users[0]?.isInterested : false
-      //  const { users, ...categoryWithoutUsers } = category;
-      //  return {
-      //   ...categoryWithoutUsers,
-      //   isInterested: isInterested
-      // }});
-
-
       const categories = userCategories.map(category => {
-        const isInterested = category.userCategories.length > 0 ? category?.userCategories[0]?.isInterested : false;
+        const isInterested = category.userCategories.length > 0 ? category.userCategories[0]?.isInterested : false;
         return {
           id: category.id,
           title: category.title,

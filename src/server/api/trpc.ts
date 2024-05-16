@@ -86,9 +86,7 @@ const isAuthed = t.middleware(async ({ctx, next})=>{
   //Bearer jwttoken
   if(!token) throw new TRPCError({code: 'UNAUTHORIZED'})
 
-  console.log("THE LINE BFR ERR :: ",token)
   const {id} = await decryptJWT(token)
-  console.log("THE LINE AFTER ERR")
 
   const foundUser = await db.user.findUnique({
     where:{

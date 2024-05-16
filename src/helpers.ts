@@ -21,9 +21,9 @@ export function encryptDataRSA(data: string) {
 
   export const validateForm = (Issues : ZodIssue[]) => {
    
-    const errors: { [key: string]: string } = {};
+    const errors: Record<string, string>= {};
       Issues.forEach(zodError => {
-        let path = zodError.path[0]
+        const path = zodError.path[0]
         if (path && !(path in errors)) {
           errors[path] = zodError.message;
         }

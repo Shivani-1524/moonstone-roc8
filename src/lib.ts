@@ -43,15 +43,15 @@ export async function updateSession(request: NextRequest) {
     }
     const expires = new Date();
     expires.setHours(expires.getHours() + 24);
-    parsed.expires = expires;
+    parsed.exp = expires.getTime();
 
-    const token = await encryptJWT(parsed, parsed.expires);
+    const token = await encryptJWT(parsed, parsed.exp.toString());
     setToken(token.toString());
 
     const response = NextResponse.next();
     response.cookies.set("moonstone-session", token, {
       httpOnly: true,
-      expires: parsed.expires,
+      expires: parsed.exp,
     });
 
     return response;

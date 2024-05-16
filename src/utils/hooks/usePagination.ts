@@ -17,7 +17,7 @@ interface PaginationProps {
     currentPage,
   }: PaginationProps): (number | string)[] => {
     const range = (start : number, end : number): number[] => {
-        let length = end - start + 1;
+        const length = end - start + 1;
         return Array.from({ length }, (_, idx) => idx + start);
       };
 
@@ -31,7 +31,7 @@ interface PaginationProps {
     
         const shouldShowLeftDots = leftSiblingIndex > 1;
         const shouldShowRightDots = rightSiblingIndex < totalPages;
-        let middleRange = range(leftSiblingIndex, rightSiblingIndex);
+        const middleRange = range(leftSiblingIndex, rightSiblingIndex);
     
         if (shouldShowLeftDots && shouldShowRightDots) {
             return [DOTS, ...middleRange, DOTS];
