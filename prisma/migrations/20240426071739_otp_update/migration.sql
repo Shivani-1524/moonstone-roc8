@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "passwordAttemptCounter" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "unblocksUserAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ALTER COLUMN "otpAttemptCounter" SET DEFAULT 0;
