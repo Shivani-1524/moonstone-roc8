@@ -20,7 +20,6 @@ export const getBaseUrl = () => {
 let token: string;
 
 export const setToken = (newToken: string) => {
-  localStorage.setItem("access-token", newToken)
   token = newToken
 }
 

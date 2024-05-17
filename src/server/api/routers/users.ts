@@ -310,7 +310,7 @@ export const usersRouter = createTRPCRouter({
       throw new TRPCError({code:"UNAUTHORIZED", message: `You have attempted to enter your OTP for more than 5 times, please try again after ${formatDateTime(isUserPresent.otpAttemptTimer)}`})
     }
     else if(isUserPresent?.otpExpiresAt < now){
-      throw new TRPCError({code:"UNAUTHORIZED", message: "Your OTP has expired, please try again"})
+      throw new TRPCError({code:"UNAUTHORIZED", message: "Your OTP has expired, please sign up again"})
     }
     
     const decryptedOtp = decryptDataRSA(otp)

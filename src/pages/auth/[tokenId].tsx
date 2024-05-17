@@ -28,8 +28,9 @@ const OtpPage = () => {
   const [otp, setOtp] = useState<string[]>(new Array(8).fill(""));
   const [userEmail, setUserEmail] = useState("")
 
-  const {mutate : otpVerifyMutate} = api.user.verifyOtp.useMutation({
+  const {mutate : otpVerifyMutate, isPending} = api.user.verifyOtp.useMutation({
       onSuccess(data, variables, context) {
+        localStorage.setItem("access-token", data?.token)
         setToken(data?.token)
         router.push("/").catch(e => toast.error("Invalid or expired token"))
       },
@@ -98,7 +99,9 @@ const OtpPage = () => {
                     <OtpInput otp={otp} valueLength={8} onChange={(value: string[])=>{
                       setOtp(value)}} submitForm={()=>handleOtpVerify()}/>
                 </div>
-                <button onClick={handleOtpVerify} className='rounded-md bg-black text-white w-full h-14 mb-15'> <p className='text-center font-medium'>VERIFY</p> </button>
+                <button onClick={handleOtpVerify} className='rounded-md bg-black text-white w-full h-14 mb-15 flex justify-center items-center'>
+                   {isPending ? <span className="loader white w-5 h-5 "></span> : <p className='text-center font-medium'>VERIFY</p>} 
+                </button>
               </div>
           </div>
     </div>

@@ -41,17 +41,14 @@ export async function updateSession(request: NextRequest) {
     if (request.nextUrl.pathname.startsWith('/login') && parsed) {
       return NextResponse.redirect(new URL('/', request.url));
     }
-    const expires = new Date();
-    expires.setHours(expires.getHours() + 24);
-    parsed.exp = expires.getTime();
 
-    const token = await encryptJWT(parsed, parsed.exp.toString());
+    const token = await encryptJWT(parsed, "24 hrs");
     setToken(token.toString());
 
     const response = NextResponse.next();
     response.cookies.set("moonstone-session", token, {
       httpOnly: true,
-      expires: parsed.exp,
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
     });
 
     return response;

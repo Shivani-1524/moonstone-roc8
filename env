@@ -1,0 +1,13 @@
+# When adding additional environment variables, the schema in "/src/env.js"
+# should be updated accordingly.
+
+# Prisma
+# https://www.prisma.io/docs/reference/database-reference/connection-urls#env
+DATABASE_URL="postgres://postgres.nsetptnfrevqmqpzcheb:M4dIjBn0lN4rmQZy@aws-0-ap-south-1.pooler.supabase.com:5432/postgres"
+PRIVATE_RSASECRET="-----BEGIN RSA PRIVATE KEY-----MIICXAIBAAKBgQCMU7XRqkg0EteWvZ2h7snjMYaPTm+t17PeU5nbycGURKNnc1jb4OQMOlzj1hJUeHz2zJGQvlV1EkCcNZdNbhuKUh/hESQsGwYY6xIeR9EAk8Jbs990EAZbvNsZmSFtCYs3usGKjRTNYdjcwgQKPoUO6zVH6iqJeMTzC8ttk5zjPwIDAQABAoGAGqC327VIRjldF4mbo+LABJCdTAxCPOa1hvauN3qtdQkhSLwmnHKsU3Wvsrwodkb2z446ARFc/f4crIeu0k6WgvyyamZTsTrUTiqcf68i8yUjl6ISBphsT5Dh2H/6QBKsO+7GnQDJsihnJ0kuPfV1++0vjaojxEj5MFobmoeTt0ECQQDNHcMlXxRKjhW2xIKwDKaJ5RBJeBJQliwmoA2+LApTSEgtYeF4c3wS3pv/tZWUYmr6MI0PoiWeRqTQgo0Iu/hZAkEAryNmxyrLRF/ImXIz2ZYHXaG+6Br0gy/LhGpyVULzSOfP9BVkla+qsDIrV+PCPIoykv6+HMnNPEjrw/j+HrfFVwJAMtsTPFvTkxyhY5xbbrzkOcJShHTBzbs+HSGH5sPSl42PX7kqBwxTEfahpQfnm0+/iGKrRtoEC7cmPBByWV0JmQJBAIFqDGlBov/8MzPH4q52oSy792B1gpZpu9419hQwq6sEuHJpWHEPZHZcLBD+2Kl5iRN7r6mAKOrSC309QTIbo3MCQHbNMuAQYa8+/9DSpp5qewKGWQdvNrLin1l8G6DhMAQjXo+qIg5FfTShy3MPCu3R++sIfUaiUFumT0/1GYvFeIg=-----END RSA PRIVATE KEY-----"
+NEXT_PUBLIC_RSASECRET="-----BEGIN PUBLIC KEY-----MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCMU7XRqkg0EteWvZ2h7snjMYaPTm+t17PeU5nbycGURKNnc1jb4OQMOlzj1hJUeHz2zJGQvlV1EkCcNZdNbhuKUh/hESQsGwYY6xIeR9EAk8Jbs990EAZbvNsZmSFtCYs3usGKjRTNYdjcwgQKPoUO6zVH6iqJeMTzC8ttk5zjPwIDAQAB-----END PUBLIC KEY-----"
+ACCESS_TOKEN_SECRET = "c478a533024718db54508c76597f4bbcc3716e20f0766590a8efe766104bea75615bf97221a7c971b98a33232ff03ff7fd7e800869c223bc4a392a2b77844267"
+JWT_SECRET = "70b0f23649cdaafd21a6d4d0d4ebaba2a02010f6affb767dd3f3538fe395c3853fa15315cc8ffa1e86fe7ed235e1f1d09194fc5a2bf238c33c51b9470537422f"
+EMAIL_USER = "sp6177118@gmail.com"
+EMAIL_FROM = "sp6177118@gmail"
+EMAIL_PASS = "srwu vvsq ljnx gsue"
