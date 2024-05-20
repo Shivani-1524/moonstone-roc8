@@ -47,7 +47,6 @@ export const api = createTRPCNext<AppRouter>({
           transformer: superjson,
           url: `${getBaseUrl()}/api/trpc`,
           headers(){
-            const token = localStorage.getItem("access-token"); 
             return {
               Authorization: `Bearer ${token}`,
             }

@@ -244,7 +244,7 @@ export const usersRouter = createTRPCRouter({
         throw new TRPCError({code: "BAD_REQUEST", message: "You have signed up successfully already, please log in instead"})
       }
       else if(isUserPresent.otpResendTimer > now ){
-        throw new TRPCError({code: "UNAUTHORIZED", message: "Otp Resend Timer has not ended yet. Please try again later!"})
+        throw new TRPCError({code: "UNAUTHORIZED", message: `Otp Resend Timer has not ended yet. Please try again after ${formatDateTime(isUserPresent.otpResendTimer)} !`})
       }
 
       const otpResendTimer = addMinutesToDate(now, OTP_RESEND_DELAY_MINUTES)

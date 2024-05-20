@@ -10,8 +10,9 @@ import { TRPCError, initTRPC } from "@trpc/server";
 import { NextApiRequest, type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import superjson from "superjson";
 import { ZodError } from "zod";
-import {decryptJWT} from "~/auth";
-
+import { decryptJWT } from "~/auth";
+import { COOKIE_NAME } from "./utils/constants";
+import cookie from 'cookie';
 import { db } from "~/server/db";
 
 /**
@@ -82,10 +83,15 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
 
 const isAuthed = t.middleware(async ({ctx, next})=>{
   const {req, res, db} = ctx
-  const token = req.headers.authorization?.split(' ')[1]
-  //Bearer jwttoken
-  if(!token) throw new TRPCError({code: 'UNAUTHORIZED'})
-
+  const cookies = req.headers.cookie;
+  if(!cookies){
+    throw new TRPCError({code: 'UNAUTHORIZED', message: "invalid authorisation token"})
+  }
+    const token = cookie.parse(cookies)[COOKIE_NAME] ?? null;
+    if(!token){
+      throw new TRPCError({code: 'UNAUTHORIZED', message: "invalid authorisation token"})
+    }
+    
   const {id} = await decryptJWT(token)
 
   const foundUser = await db.user.findUnique({
@@ -93,7 +99,7 @@ const isAuthed = t.middleware(async ({ctx, next})=>{
       id: id
     }
   })
-  if(!foundUser) throw new TRPCError({code: 'UNAUTHORIZED'})
+  if(!foundUser) throw new TRPCError({code: 'UNAUTHORIZED', message: "user not found"})
 
   return next({
     ctx: {

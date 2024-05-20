@@ -1,14 +1,13 @@
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { redirect } from 'next/navigation'
-import {encryptJWT, decryptJWT} from "~/auth"
+import {encryptJWT, decryptJWT, UserJwtPayload} from "~/auth"
 import { setToken } from "./utils/api";
 
 
 
 export async function logout() {
   cookies().set("moonstone-session", "", { expires: new Date(0) });
-  localStorage.removeItem("access-token");
 }
 
 export async function getSession() {
@@ -33,18 +32,18 @@ export async function updateSession(request: NextRequest) {
       return NextResponse.redirect(new URL('/login', request.url));
     }
 
-    const parsed = await decryptJWT(session);
-    if (!parsed) {
+    const parsed = await decryptJWT(session) as UserJwtPayload;
+    if (!parsed || !parsed?.id) {
       throw new Error("Failed to parse session");
     }
 
-    if (request.nextUrl.pathname.startsWith('/login') && parsed) {
+    if (request.nextUrl.pathname.startsWith('/login') && parsed?.id) {
       return NextResponse.redirect(new URL('/', request.url));
     }
 
-    const token = await encryptJWT(parsed, "24 hrs");
+    const token = await encryptJWT({id: parsed?.id}, "24 hrs");
     setToken(token.toString());
-
+    
     const response = NextResponse.next();
     response.cookies.set("moonstone-session", token, {
       httpOnly: true,

@@ -35,7 +35,6 @@ const [submitErrors, setSubmitErrors] = useState("")
   const [loginFormErrors, setLoginFormErrors] = useState({})
     const {mutate : loginMutate, isPending} = api.user.loginUser.useMutation({
     onSuccess(data, variables, context) {
-      localStorage.setItem("access-token", data?.token)
       setToken(data?.token)
       router.push('/')
     },

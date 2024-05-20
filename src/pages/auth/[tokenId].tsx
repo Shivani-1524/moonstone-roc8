@@ -30,7 +30,6 @@ const OtpPage = () => {
 
   const {mutate : otpVerifyMutate, isPending} = api.user.verifyOtp.useMutation({
       onSuccess(data, variables, context) {
-        localStorage.setItem("access-token", data?.token)
         setToken(data?.token)
         router.push("/").catch(e => toast.error("Invalid or expired token"))
       },
