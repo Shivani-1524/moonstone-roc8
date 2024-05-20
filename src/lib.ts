@@ -3,28 +3,17 @@ import { NextRequest, NextResponse } from "next/server";
 import { redirect } from 'next/navigation'
 import {encryptJWT, decryptJWT, UserJwtPayload} from "~/auth"
 import { setToken } from "./utils/api";
-
+import { COOKIE_NAME, cookieOptions } from "./server/api/utils/constants";
 
 
 export async function logout() {
-  cookies().set("moonstone-session", "", { expires: new Date(0) });
+  cookies().set(COOKIE_NAME, "", { expires: new Date(0) });
 }
 
-export async function getSession() {
-  try{
-    const session = cookies().get("moonstone-session")?.value;
-    if (!session) return null;
-    return await decryptJWT(session);
-  }catch(err){
-    console.log("GET Session error: ",err)
-    redirect('/login')
-  }
-
-}
 
 export async function updateSession(request: NextRequest) {
   try {
-    const session = request.cookies.get("moonstone-session")?.value;
+    const session = request.cookies.get(COOKIE_NAME)?.value;
     if (request.nextUrl.pathname.startsWith('/login') && !session) {
       return;
     }
@@ -43,12 +32,9 @@ export async function updateSession(request: NextRequest) {
 
     const token = await encryptJWT({id: parsed?.id}, "24 hrs");
     setToken(token.toString());
-    
+
     const response = NextResponse.next();
-    response.cookies.set("moonstone-session", token, {
-      httpOnly: true,
-      expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
-    });
+    response.cookies.set(COOKIE_NAME, token, cookieOptions);
 
     return response;
   } catch (err) {

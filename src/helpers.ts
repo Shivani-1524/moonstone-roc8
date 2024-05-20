@@ -15,7 +15,6 @@ export function encryptDataRSA(data: string) {
   
     const key_public = new NodeRSA(publicKey);
     const encrypted_data = key_public.encrypt(data, 'base64');
-    console.log("ENCCC :: ", encrypted_data);
     return encrypted_data;
   }
 
@@ -28,7 +27,5 @@ export function encryptDataRSA(data: string) {
           errors[path] = zodError.message;
         }
       })
-
-      console.log("ERR :: ",errors);
       return errors
   }

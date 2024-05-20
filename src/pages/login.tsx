@@ -39,7 +39,6 @@ const [submitErrors, setSubmitErrors] = useState("")
       router.push('/')
     },
     onError(error){
-      console.log("meowie :: 123 :: ",error)
       toast.error(`${error.message}`);
       setSubmitErrors(error.message)
       setLoginFormErrors({})
@@ -66,9 +65,7 @@ const [submitErrors, setSubmitErrors] = useState("")
     if (e.key === 'Enter') {
         handleSubmit();
     }
-}
-
- 
+  }
 
   const submitLoginForm = () => {
     const encryptedPswd = encryptDataRSA(loginFormValues?.password)
@@ -77,7 +74,6 @@ const [submitErrors, setSubmitErrors] = useState("")
   }
 
   useEffect(()=>{
-    console.log("meowiww");
     
     if(Object.keys(loginFormErrors).length === 0 && formSubmit){
       submitLoginForm()

@@ -29,13 +29,11 @@ const Signup = () => {
     const [signupFormErrors, setSignupFormErrors] = useState({})
     const {mutate : signupMutate, isPending} = api.user.createUser.useMutation({
       onSuccess(data, variables, context) {
-        console.log(data, "signup successful")
         const {otpToken} = data
         router.push(`/auth/${otpToken}`)
         toast.success("OTP sent, please check your email for an OTP code")
       },
       onError(error){
-        console.log("signup err : ",error)
         setSignupFormValues(initialValues)
         setSubmitErrors(error.message)
         toast.error(`Failed to signup: ${error.message}`);
@@ -62,7 +60,6 @@ const Signup = () => {
   }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    console.log(e, "the key down");
     if (e.key === 'Enter') {
         handleSubmit();
     }
@@ -72,7 +69,6 @@ const Signup = () => {
   const submitSignupForm = () => {
     const encryptedPswd = encryptDataRSA(signupFormValues?.password)
     const _signupFormValues = {...signupFormValues, password: encryptedPswd}
-    console.log(_signupFormValues, "log")
     signupMutate(_signupFormValues)
   }
 

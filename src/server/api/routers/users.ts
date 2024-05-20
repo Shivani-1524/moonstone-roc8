@@ -13,9 +13,7 @@ import { PasswordRegex } from "~/helpers";
 import { jwtDecrypt } from "jose";
 import jwt from 'jsonwebtoken';
 import {
-  transporter,
   cookieOptions,
-  mailOptions,
   OTP_MAX_VALUE,
   OTP_MIN_VALUE,
   OTP_EXPIRATION_MINUTES,
@@ -24,7 +22,7 @@ import {
   JWT_EXPIRATION,
   COOKIE_NAME
 } from "../utils/constants";
-
+import { transporter, mailOptions } from "../utils/helpers";
 
 
 
@@ -36,25 +34,11 @@ const verificationCodeResendSchema = z.object({
 
 
 export const usersRouter = createTRPCRouter({
-  // getAll: publicProcedure.query(({ctx}) => {
-  //   return ctx.db.user.findMany();
-  // }),
 
-  //get user by id
-  // getOne: publicProcedure
-  //   .input(idSchema)
-  //   .query(({ input, ctx }) => {
-  //     return ctx.db.user.findUnique({
-  //       where: idSchema.parse(input),
-  //     });
-  //   }),
-
-  //create user
   createUser: publicProcedure
     .input(createUserSchema)
     .mutation(async ({ input, ctx }) => {
       const {email, name, password} = input
-      console.log("I AM HIT, TARGET HOT");
       
       const now = new Date()
 
@@ -63,9 +47,6 @@ export const usersRouter = createTRPCRouter({
           email: email
         },
       });
-      console.log("I AM PAST 70");
-
-
       if(isUserPresent?.emailVerified){
         throw new TRPCError({code: "BAD_REQUEST", message: "Account Already Exists please login"})
       }
@@ -164,7 +145,6 @@ export const usersRouter = createTRPCRouter({
       }
 
       const now = new Date()
-      // const otpExpiresAt = addMinutesToDate(now, 15)
 
       if(isUserPresent.passwordAttemptCounter >= 5 && isUserPresent.unblocksUserAt > now){
         
@@ -266,7 +246,6 @@ export const usersRouter = createTRPCRouter({
       });
 
       const token = encryptHs256SignJWT({email: isUserPresent?.email} , JWT_EMAIL_VERIFICATION_EXPIRY)
-      console.log(getBaseUrl(), "FITT CHECK")
       const url = `${getBaseUrl()}/auth/${token}`
 
       

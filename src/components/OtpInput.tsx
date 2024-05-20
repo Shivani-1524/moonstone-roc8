@@ -16,7 +16,6 @@ const OtpInput = ({ otp, valueLength, onChange, submitForm }: Props) => {
 
     const handleOnChange = ({target}:React.ChangeEvent<HTMLInputElement>): void => {
         const {value} = target;
-        console.log(value, "the value u se", currentOtpIndex);
         
         const newOTP: string[] = [...otp]
         newOTP[currentOtpIndex] = value.substring(value.length - 1);
@@ -28,14 +27,10 @@ const OtpInput = ({ otp, valueLength, onChange, submitForm }: Props) => {
         }
 
         onChange(newOTP)
-        console.log(newOTP, "look")
-       
-
     }
 
     const handleOnKeyDown = ({key}: React.KeyboardEvent<HTMLInputElement> , index: number) => {
         currentOtpIndex = index
-        console.log(currentOtpIndex, "the current index");
         
         if(key === 'Backspace' && otp[index] === ''){
             setActiveOtpIndex(currentOtpIndex-1)    

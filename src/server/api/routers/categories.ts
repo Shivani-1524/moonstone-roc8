@@ -39,7 +39,6 @@ export const categoriesRouter = createTRPCRouter({
     limit: z.number().default(10)
   }))
   .query( async ({ctx, input}) => {
-    console.log("CURR USER", ctx.user.userId)
     const userId = ctx.user.userId;
     const { page, limit } = input;
     const skip = (page - 1) * limit;
@@ -80,21 +79,6 @@ export const categoriesRouter = createTRPCRouter({
         categories,
         totalCategories
       }
-
-      
-
-      // console.log(m, "mapped categories");
-
-      // return m
-      
-
-      // return userCategories.map(category => {
-      //  let isInterested = category?.user?.length ? category.users[0]?.isInterested : false
-      //  const { users, ...categoryWithoutUsers } = category;
-      //  return {
-      //   ...categoryWithoutUsers,
-      //   isInterested: isInterested
-      // }});
 
   }),
 
@@ -140,13 +124,6 @@ export const categoriesRouter = createTRPCRouter({
 
       return true;
 
-
-    //   return ctx.db.user.update({
-    //     where: {
-    //       email: input.email.toString(),
-    //     },
-    //     data: userUpdateSchema.parse(input),
-    //   });
     }),
 
 })

@@ -72,9 +72,8 @@ const OtpPage = () => {
       }
        setUserEmail(obscureEmail(decoded.email))
       }catch(err){
-        console.log("JWT for OTP Error - ",err)
-        //todo: throw toast saying token expired or send state via route
-        router.push('/signup').catch(e => toast.error("Invalid or expired token"))
+        toast.error("Please signup again, your token has expired")
+        router.push('/signup').catch(e => toast.error("Error while redirecting"))
       }
     }
 
