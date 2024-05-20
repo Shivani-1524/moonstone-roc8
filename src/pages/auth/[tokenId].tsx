@@ -1,5 +1,3 @@
-'use client'
-import { GetStaticPathsContext, GetStaticPropsContext } from 'next'
 import React, {useEffect, useState, FC} from 'react'
 import Navbar from '~/components/Navbar'
 import OtpInput from '~/components/OtpInput'

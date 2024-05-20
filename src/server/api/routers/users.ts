@@ -129,6 +129,13 @@ export const usersRouter = createTRPCRouter({
       
     }),
 
+    logoutUser: publicProcedure.mutation((async ({input, ctx}) => {
+      ctx.res.setHeader('Set-Cookie', cookie.serialize(COOKIE_NAME, '', {
+        ...cookieOptions,
+        expires: new Date(0)
+      }))
+    })),
+
     loginUser: publicProcedure
     .input(loginUserSchema)
     .mutation(async ({input, ctx}) => {

@@ -6,11 +6,6 @@ import { setToken } from "./utils/api";
 import { COOKIE_NAME, cookieOptions } from "./server/api/utils/constants";
 
 
-export async function logout() {
-  cookies().set(COOKIE_NAME, "", { expires: new Date(0) });
-}
-
-
 export async function updateSession(request: NextRequest) {
   try {
     const session = request.cookies.get(COOKIE_NAME)?.value;

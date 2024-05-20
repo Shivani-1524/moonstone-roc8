@@ -1,13 +1,31 @@
 import React from 'react'
 import { MagnifyingGlass, ShoppingCartSimple, CaretLeft, CaretRight } from "@phosphor-icons/react/dist/ssr";
-
+import { useRouter } from 'next/navigation';
+import { api } from '~/utils/api';
+import {toast} from 'react-toastify';
 
 const Navbar = () => {
+  const router = useRouter()
+
+  const {mutate : loginMutate, isPending} = api.user.logoutUser.useMutation({
+    onSuccess(data, variables, context) {
+      router.push('/login')
+    },
+    onError(error){
+      toast.error(`failed to logout: ${error.message}`);
+    }
+  })
+
+
+  const handleLogout = () => {
+    loginMutate()
+  }
+
   return (
     <div>
           <div className="px-8">
         <div className="flex justify-end items-center gap-3 h-36">
-          <p className="text-xs">Help</p>
+          <p onClick={handleLogout} className="text-xs cursor-pointer">Help</p>
           <p className="text-xs">Orders & Returns</p>
           <p className="text-xs">Hi, John</p>
         </div>
