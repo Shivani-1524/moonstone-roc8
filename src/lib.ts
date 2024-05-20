@@ -21,8 +21,8 @@ export async function updateSession(request: NextRequest) {
       return NextResponse.redirect(new URL('/login', request.url));
     }
 
-    const parsed = await decryptJWT(session) as UserJwtPayload;
-    if (!parsed || !parsed?.id) {
+    const parsed = await decryptJWT(session);
+    if (!parsed?.id) {
       throw new Error("Failed to parse session");
     }
 
