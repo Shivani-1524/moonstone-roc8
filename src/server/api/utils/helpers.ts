@@ -24,7 +24,9 @@ export function decryptDataRSA(encryptedData: string ) {
 
 
 export const formatDateTime = (dateString : Date) => {
-    return `${dateString.getHours()} : ${dateString.getMinutes()}`
+  const localdate = new Date(dateString)
+  console.log(localdate, "thge local datestring");
+  return `${localdate.getHours()} : ${localdate.getMinutes()}`
 }
 
 
