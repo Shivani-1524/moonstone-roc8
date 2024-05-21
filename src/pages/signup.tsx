@@ -4,7 +4,7 @@ import Navbar from '~/components/Navbar'
 import OtpInput from '~/components/OtpInput';
 import { createUserSchema } from '~/types';
 import { api } from '~/utils/api';
-import { validateForm, encryptDataRSA, PasswordRegex } from '~/helpers';
+import { validateForm, encryptDataRSA, PasswordRegex, formatTimerMessage } from '~/helpers';
 // import { redirect } from 'next/navigation';
 import { useRouter } from 'next/navigation'
 import {toast} from "react-toastify";
@@ -34,9 +34,17 @@ const Signup = () => {
         toast.success("OTP sent, please check your email for an OTP code")
       },
       onError(error){
+        const errMessage = error.message;
+        if(errMessage?.includes("UTCTIMER")){
+          const formattedMessage = formatTimerMessage(errMessage)
+          toast.error(formattedMessage)
+          setSubmitErrors(formattedMessage)
+        }else{
+          toast.error(`${errMessage}`);
+          setSubmitErrors(errMessage)
+        }
         setSignupFormValues(initialValues)
-        setSubmitErrors(error.message)
-        toast.error(`Failed to signup: ${error.message}`);
+        setSignupFormErrors({})
       }
     })
     

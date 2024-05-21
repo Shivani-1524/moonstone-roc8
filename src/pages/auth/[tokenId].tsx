@@ -6,7 +6,7 @@ import { api } from '~/utils/api'
 import { useRouter } from 'next/router';
 import { redirect } from 'next/navigation';
 import jwt from 'jsonwebtoken';
-import { encryptDataRSA } from '~/helpers'
+import { encryptDataRSA, formatTimerMessage } from '~/helpers'
 import { setToken } from '~/utils/api'
 import {toast} from "react-toastify";
 
@@ -32,7 +32,12 @@ const OtpPage = () => {
         router.push("/").catch(e => toast.error("Invalid or expired token"))
       },
       onError(error, code){
-        toast.error(error.message);
+        const errMessage = error.message;
+        if(errMessage?.includes("UTCTIMER")){
+          toast.error(formatTimerMessage(errMessage))
+        }else{
+          toast.error(`${errMessage}`);
+        }
       }
     })
 

@@ -29,3 +29,12 @@ export function encryptDataRSA(data: string) {
       })
       return errors
   }
+
+export const formatTimerMessage = (errMessage : string) => {
+  const words = errMessage.split(" ")
+  const timerIndex = words.indexOf("UTCTIMER")
+  const utctime = words.slice(timerIndex + 1).join(" ")
+  const formattedErrArray = words.slice(0, timerIndex)
+  const localDate = new Date(utctime)
+  return ` ${formattedErrArray.join(" ")} ${localDate.getHours()} : ${localDate.getMinutes()}`
+}

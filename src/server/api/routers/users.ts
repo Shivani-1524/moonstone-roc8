@@ -58,7 +58,7 @@ export const usersRouter = createTRPCRouter({
         const nextAvailableTime = isUserPresent.otpResendTimer > isUserPresent.otpAttemptTimer ? isUserPresent.otpResendTimer : isUserPresent.otpAttemptTimer;
         throw new TRPCError({
           code: "BAD_REQUEST",
-          message: `Multiple OTP resend attempts made. Please wait for the OTP timer to end. Try again after: ${formatDateTime(nextAvailableTime)}`
+          message: `Multiple OTP resend attempts made. Please wait for the OTP timer to end. Try again after: UTCTIMER ${nextAvailableTime}`
         })
       }
       const otp = randomInt(OTP_MIN_VALUE, OTP_MAX_VALUE)
@@ -160,7 +160,7 @@ export const usersRouter = createTRPCRouter({
 
       if(isUserPresent.passwordAttemptCounter >= 5 && isUserPresent.unblocksUserAt > now){
         
-        throw new TRPCError({code: 'UNAUTHORIZED', message: `Please wait for the timer to end. trying again after ${formatDateTime(isUserPresent.unblocksUserAt)}`})
+        throw new TRPCError({code: 'UNAUTHORIZED', message: `Please wait for the timer to end. trying again after UTCTIMER ${isUserPresent.unblocksUserAt}`})
       }
 
       const decryptedPassword = decryptDataRSA(password)
@@ -236,7 +236,7 @@ export const usersRouter = createTRPCRouter({
         throw new TRPCError({code: "BAD_REQUEST", message: "You have signed up successfully already, please log in instead"})
       }
       else if(isUserPresent.otpResendTimer > now ){
-        throw new TRPCError({code: "UNAUTHORIZED", message: `Otp Resend Timer has not ended yet. Please try again after ${formatDateTime(isUserPresent.otpResendTimer)} !`})
+        throw new TRPCError({code: "UNAUTHORIZED", message: `Otp Resend Timer has not ended yet. Please try again after UTCTIMER ${isUserPresent.otpResendTimer} !`})
       }
 
       const otpResendTimer = addMinutesToDate(now, OTP_RESEND_DELAY_MINUTES)
@@ -298,7 +298,7 @@ export const usersRouter = createTRPCRouter({
 
     const now = new Date()
     if(isUserPresent?.otpAttemptCounter >= 5 && isUserPresent.otpAttemptTimer > now ){
-      throw new TRPCError({code:"UNAUTHORIZED", message: `You have attempted to enter your OTP for more than 5 times, please try again after ${formatDateTime(isUserPresent.otpAttemptTimer)}`})
+      throw new TRPCError({code:"UNAUTHORIZED", message: `You have attempted to enter your OTP for more than 5 times, please try again after UTCTIMER ${isUserPresent.otpAttemptTimer}`})
     }
     else if(isUserPresent?.otpExpiresAt < now){
       throw new TRPCError({code:"UNAUTHORIZED", message: "Your OTP has expired, please sign up again"})

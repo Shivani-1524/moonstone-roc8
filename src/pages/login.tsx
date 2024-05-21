@@ -4,11 +4,12 @@ import Navbar from '~/components/Navbar'
 import { EmailRegex } from '~/helpers';
 import FormField from '~/components/FormField';
 import { api } from '~/utils/api';
-import { encryptDataRSA, validateForm } from '~/helpers';
+import { encryptDataRSA, validateForm, formatTimerMessage } from '~/helpers';
 import { loginUserSchema } from '~/types';
 import { useRouter } from 'next/navigation';
 import { setToken } from '~/utils/api';
 import {toast} from "react-toastify";
+import { it } from 'node:test';
 
 export type LoginErrors = {
   email?: string;
@@ -39,8 +40,15 @@ const [submitErrors, setSubmitErrors] = useState("")
       router.push('/')
     },
     onError(error){
-      toast.error(`${error.message}`);
-      setSubmitErrors(error.message)
+      const errMessage = error.message;
+      if(errMessage?.includes("UTCTIMER")){
+        const formattedMessage = formatTimerMessage(errMessage)
+        toast.error(formattedMessage)
+        setSubmitErrors(formattedMessage)
+      }else{
+        toast.error(`${errMessage}`);
+        setSubmitErrors(errMessage)
+      }
       setLoginFormErrors({})
       setLoginFormValues(initialValues)
     }

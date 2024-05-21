@@ -24,9 +24,10 @@ export function decryptDataRSA(encryptedData: string ) {
 
 
 export const formatDateTime = (dateString : Date) => {
-  const localdate = new Date(dateString)
-  console.log(localdate, "thge local datestring");
-  return `${localdate.getHours()} : ${localdate.getMinutes()}`
+  const utcDate = new Date(dateString)
+  const timezoneOffset = utcDate.getTimezoneOffset() * 60 * 1000;
+  const localDate = new Date(utcDate.getTime() - timezoneOffset);
+  return `${localDate.getHours()} : ${localDate.getMinutes()}`
 }
 
 
