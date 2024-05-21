@@ -103,6 +103,19 @@ export const usersRouter = createTRPCRouter({
         throw new TRPCError({code: "INTERNAL_SERVER_ERROR", message: "Unexpected Error Ocurred while creating the user"})
       }
 
+      await new Promise((resolve, reject) => {
+        // verify connection configuration
+        transporter.verify(function (error, success) {
+            if (error) {
+                console.log(error);
+                reject(error);
+            } else {
+                console.log("Server is ready to take our messages");
+                resolve(success);
+            }
+        });
+    });
+
       //update existing entry
       const token = encryptHs256SignJWT({email: isUserPresent?.email ?? newUser?.email ?? ""}, JWT_EMAIL_VERIFICATION_EXPIRY)
       const url = `${getBaseUrl()}/auth/${token}`
@@ -114,15 +127,7 @@ export const usersRouter = createTRPCRouter({
         html: `<b>Please find your OTP: ${otp} </b><p>Go to this <a href=${url}>link</a> incase you missed the OTP verification website </p><p>Note that given OTP expires in 15 minutes</p> `, // html body}
       }
     
-      transporter.sendMail(currentMailOptions, (error, info) => {
-        if(error){
-          console.log(error)
-          throw new TRPCError({code: "INTERNAL_SERVER_ERROR", message: `Unexpected Error Ocurred while sending the email - ${error?.message}`})
-        }else{
-          console.log('Email sent: ' +info.response)
-        }
-      })
-
+      await transporter.sendMail(currentMailOptions)
       
       return {otpToken: token}
 
