@@ -69,10 +69,9 @@ const [submitErrors, setSubmitErrors] = useState("")
   }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    console.log(e.key)
-    // if (e.key === 'Enter') {
-    //     handleSubmit();
-    // }
+    if (e.key === 'Enter') {
+        handleSubmit();
+    }
   }
 
   const submitLoginForm = () => {
