@@ -101,18 +101,7 @@ export const usersRouter = createTRPCRouter({
         throw new TRPCError({code: "INTERNAL_SERVER_ERROR", message: "Unexpected Error Ocurred while creating the user"})
       }
 
-      await new Promise((resolve, reject) => {
-        // verify connection configuration
-        transporter.verify(function (error, success) {
-            if (error) {
-                console.log(error);
-                reject(error);
-            } else {
-                console.log("Server is ready to take our messages");
-                resolve(success);
-            }
-        });
-    });
+      await transporter.verify();
 
       //update existing entry
       const token = encryptHs256SignJWT({email: isUserPresent?.email ?? newUser?.email ?? ""}, JWT_EMAIL_VERIFICATION_EXPIRY)
@@ -150,7 +139,7 @@ export const usersRouter = createTRPCRouter({
         },
       });
 
-      if(!isUserPresent || !isUserPresent?.emailVerified){
+      if(!isUserPresent?.emailVerified){
         throw new TRPCError({code: 'UNAUTHORIZED', message: "Looks like you are not registered yet. Please sign up!"})
       }
 
