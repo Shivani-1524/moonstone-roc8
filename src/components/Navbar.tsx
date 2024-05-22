@@ -1,11 +1,17 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import { MagnifyingGlass, ShoppingCartSimple, CaretLeft, CaretRight } from "@phosphor-icons/react/dist/ssr";
 import { useRouter } from 'next/navigation';
 import { api } from '~/utils/api';
 import {toast} from 'react-toastify';
+import { getCookies, deleteCookie, getCookie } from 'cookies-next';
+import jwt from 'jsonwebtoken';
+import { decode } from 'punycode';
+import { NameJwtPayload } from '~/auth';
+
 
 const Navbar = () => {
-  const router = useRouter()
+  const router = useRouter();
+  const [name, setName] = useState("John")
 
   const {mutate : loginMutate, isPending} = api.user.logoutUser.useMutation({
     onSuccess(data, variables, context) {
@@ -18,8 +24,22 @@ const Navbar = () => {
 
 
   const handleLogout = () => {
+    deleteCookie("name-token")
     loginMutate()
   }
+
+  const getCurrentCookie = () => {
+    const userNameCookie = getCookie("name-token"); 
+    if(!userNameCookie){
+      return;
+    }
+    const decoded = jwt.decode(userNameCookie) as NameJwtPayload;
+    setName(decoded.name ?? "John")
+  }
+
+  useEffect(()=>{
+    getCurrentCookie()
+  },[])
 
   return (
     <div>
@@ -27,7 +47,7 @@ const Navbar = () => {
         <div className="flex justify-end items-center gap-3 h-36">
           <p onClick={handleLogout} className="text-xs cursor-pointer">Help</p>
           <p className="text-xs">Orders & Returns</p>
-          <p className="text-xs">Hi, John</p>
+          <p className="text-xs">Hi, {name}</p>
         </div>
         <div className="flex justify-between h-16 items-center     ">
           <p className="font-bold text-2xl">ECOMMERCE</p>

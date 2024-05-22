@@ -1,7 +1,5 @@
-import { log } from 'console';
 import React, { useEffect, useState } from 'react'
-import Navbar from '~/components/Navbar'
-import { EmailRegex } from '~/helpers';
+import Navbar from '~/components/Navbar';
 import FormField from '~/components/FormField';
 import { api } from '~/utils/api';
 import { encryptDataRSA, validateForm, formatTimerMessage } from '~/helpers';
@@ -9,7 +7,7 @@ import { loginUserSchema } from '~/types';
 import { useRouter } from 'next/navigation';
 import { setToken } from '~/utils/api';
 import {toast} from "react-toastify";
-import { it } from 'node:test';
+import { deleteCookie, setCookie } from 'cookies-next';
 
 export type LoginErrors = {
   email?: string;
@@ -35,8 +33,9 @@ const Login = () => {
 const [submitErrors, setSubmitErrors] = useState("")
   const [loginFormErrors, setLoginFormErrors] = useState({})
     const {mutate : loginMutate, isPending} = api.user.loginUser.useMutation({
-    onSuccess(data, variables, context) {
+    onSuccess(data) {
       setToken(data?.token)
+      setCookie("name-token",data?.nameToken)
       router.push('/')
     },
     onError(error){
@@ -56,7 +55,7 @@ const [submitErrors, setSubmitErrors] = useState("")
 
   const handleFormChange = (e:React.ChangeEvent<HTMLInputElement>) => {
     const {name, value} = e.target;
-    setLoginFormValues(prev => ({...prev, [name]: value.trim()}))
+    setLoginFormValues(prev => ({...prev, [name]: value}))
   }
 
   const handleSubmit = () => {
@@ -70,9 +69,10 @@ const [submitErrors, setSubmitErrors] = useState("")
   }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-        handleSubmit();
-    }
+    console.log(e.key)
+    // if (e.key === 'Enter') {
+    //     handleSubmit();
+    // }
   }
 
   const submitLoginForm = () => {
@@ -82,12 +82,15 @@ const [submitErrors, setSubmitErrors] = useState("")
   }
 
   useEffect(()=>{
-    
     if(Object.keys(loginFormErrors).length === 0 && formSubmit){
       submitLoginForm()
       setFormSubmit(false)
     }
   },[loginFormErrors, formSubmit])
+
+  useEffect(()=>{
+    deleteCookie("name-token")
+  },[])
 
   return (
     <div className='mb-10'>

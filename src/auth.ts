@@ -18,6 +18,12 @@ export interface EmailJwtPayload {
     exp: number
   }
 
+export interface NameJwtPayload {
+    name: string
+    iat: number
+    exp: number
+  }
+
 
 export async function decryptJWT(input: string): Promise<UserJwtPayload> {
     try{
@@ -39,7 +45,7 @@ export async function decryptJWT(input: string): Promise<UserJwtPayload> {
       .sign(key);
   }
 
-  export function encryptHs256SignJWT(payload: { email : string}, expiryTime: string){
+  export function encryptHs256SignJWT(payload: { email : string}  | {name : string}, expiryTime: string){
     if(!jwtAccessToken){
       throw new Error("Token has Expired")
     }

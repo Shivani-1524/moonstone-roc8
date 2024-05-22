@@ -7,7 +7,7 @@
  * need to use are documented accordingly near the end.
  */
 import { TRPCError, initTRPC } from "@trpc/server";
-import { NextApiRequest, type CreateNextContextOptions } from "@trpc/server/adapters/next";
+import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import superjson from "superjson";
 import { ZodError } from "zod";
 import { decryptJWT } from "~/auth";
@@ -22,8 +22,6 @@ import { db } from "~/server/db";
  *
  * These allow you to access things when processing a request, like the database, the session, etc.
  */
-
-type CreateContextOptions = Record<string, never>;
 
 /**
  * This helper generates the "internals" for a tRPC context. If you need to use it, you can export
@@ -82,7 +80,7 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
 });
 
 const isAuthed = t.middleware(async ({ctx, next})=>{
-  const {req, res, db} = ctx
+  const {req, db} = ctx
   const cookies = req.headers.cookie;
   if(!cookies){
     throw new TRPCError({code: 'UNAUTHORIZED', message: "invalid authorisation token"})

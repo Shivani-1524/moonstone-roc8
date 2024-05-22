@@ -1,14 +1,10 @@
-import Head from "next/head";
-import Link from "next/link";
 import { useEffect, useState } from "react";
-import NodeRSA from "node-rsa";
 import Navbar from "~/components/Navbar";
 import { api } from "~/utils/api";
-import { publicKey } from "~/helpers";
 import UserInterest from "~/components/UserInterest";
 import Pagination from "~/components/Pagination";
 import {toast} from "react-toastify";
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 
 
 export default function Home() {
@@ -29,7 +25,6 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      {/* {isLoading ? <div></div> } */}
       <div className='flex justify-center mt-10 mb-10'>
       <div className="rounded-20 px-15 border-black border w-2/5">
         <p className='font-semibold text-32 mt-10 text-center'>Please mark your interests!</p>
@@ -48,8 +43,6 @@ export default function Home() {
         
           </div> 
           {categoriesData?.totalCategories && <div className="pagination mb-[72px]">
-        
-            {/* <Pagination currentPage={currentPage} sibilingCount={paginationSibilingCount} } onPageChange={setCurrentPage} /> */}
 
             <Pagination
               className="pagination-bar"

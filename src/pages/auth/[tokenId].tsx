@@ -9,8 +9,8 @@ import jwt from 'jsonwebtoken';
 import { encryptDataRSA, formatTimerMessage } from '~/helpers'
 import { setToken } from '~/utils/api'
 import {toast} from "react-toastify";
-
-
+import { setCookie } from 'cookies-next';
+import { deleteCookie } from 'cookies-next';
 
 interface EmailJwtPayload {
   email: string
@@ -29,6 +29,7 @@ const OtpPage = () => {
   const {mutate : otpVerifyMutate, isPending} = api.user.verifyOtp.useMutation({
       onSuccess(data, variables, context) {
         setToken(data?.token)
+        setCookie("name-token",data?.nameToken)
         router.push("/").catch(e => toast.error("Invalid or expired token"))
       },
       onError(error, code){
@@ -85,6 +86,10 @@ const OtpPage = () => {
         handleOtpJwtToken(tokenId)
       }
     },[tokenId])
+
+    useEffect(()=>{
+      deleteCookie("name-token")
+    },[])
 
     
   return (

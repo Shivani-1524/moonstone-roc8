@@ -23,14 +23,6 @@ export function decryptDataRSA(encryptedData: string ) {
 }
 
 
-export const formatDateTime = (dateString : Date) => {
-  const utcDate = new Date(dateString)
-  const timezoneOffset = utcDate.getTimezoneOffset() * 60 * 1000;
-  const localDate = new Date(utcDate.getTime() - timezoneOffset);
-  return `${localDate.getHours()} : ${localDate.getMinutes()}`
-}
-
-
 export const transporter = nodemailer.createTransport({
     service: "gmail",
     host: "smtp.gmail.com",

@@ -1,35 +1,12 @@
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure, privateProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, privateProcedure } from "~/server/api/trpc";
 
-// const userIdSchema = z.object({userId: z.string() });
-
-// const userSchema = z.object({
-//   name: z.string(),
-//   email: z.string(),
-//   password: z.string(),
-//   verificationCode: z.string(),
-// })
 
 const categoryUpdateSchema = z.object({
   categoryId: z.string(),
   isInterested: z.boolean(),
 });
-
-type CategorySelect = {
-  id: boolean;
-  title: boolean;
-  users: {
-    where: {
-      userId: string;
-    };
-    select: {
-      isInterested: boolean;
-    };
-  };
-};
-
-// http://localhost:3000/api/trpc/categories.withName?batch=1&input={"0":{"json":{ "userId": "1"}}}
 
 export const categoriesRouter = createTRPCRouter({
 

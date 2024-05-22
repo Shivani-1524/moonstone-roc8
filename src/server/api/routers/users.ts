@@ -1,16 +1,14 @@
 import { z } from "zod";
 import { randomInt } from "crypto";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import {addMinutesToDate, decryptDataRSA, formatDateTime} from "../utils/helpers";
+import {addMinutesToDate, decryptDataRSA} from "../utils/helpers";
 import bcrypt from "bcrypt";
-import nodemailer from "nodemailer";
 import { TRPCError } from "@trpc/server";
 import { encryptJWT, encryptHs256SignJWT, EmailJwtPayload } from "~/auth"; 
 import { loginUserSchema, createUserSchema, otpVerifySchema } from "~/types";
-import { api, getBaseUrl } from "~/utils/api";
+import { getBaseUrl } from "~/utils/api";
 import cookie from 'cookie';
 import { PasswordRegex } from "~/helpers";
-import { jwtDecrypt } from "jose";
 import jwt from 'jsonwebtoken';
 import {
   cookieOptions,
@@ -134,7 +132,7 @@ export const usersRouter = createTRPCRouter({
       
     }),
 
-    logoutUser: publicProcedure.mutation((async ({input, ctx}) => {
+    logoutUser: publicProcedure.mutation((async ({ctx}) => {
       ctx.res.setHeader('Set-Cookie', cookie.serialize(COOKIE_NAME, '', {
         ...cookieOptions,
         expires: new Date(0)
@@ -207,11 +205,11 @@ export const usersRouter = createTRPCRouter({
         },
       });
       const token = await encryptJWT({id: isUserPresent.id}, JWT_EXPIRATION)
-      ctx.res.setHeader('Set-Cookie', cookie.serialize(COOKIE_NAME, token, cookieOptions))
+      const nameToken = encryptHs256SignJWT({name: isUserPresent.name}, JWT_EXPIRATION)
+      ctx.res.setHeader('Set-Cookie', cookie.serialize(COOKIE_NAME, token,  cookieOptions))
 
-      return {token}
+      return {nameToken, token}
       
-
     }),
     
 
@@ -268,14 +266,7 @@ export const usersRouter = createTRPCRouter({
         html: `<b>Please find your OTP: ${otp} </b><p>Go to this <a href=${url}>Link</a> incase you missed the OTP verification website </p><p>Note that given OTP expires in 15 minutes</p>`, // html body}
       }
 
-      transporter.sendMail(currentMailOptions, (error, info) => {
-        if(error){
-          console.log(error)
-          throw new TRPCError({code: "INTERNAL_SERVER_ERROR", message: `Unexpected Error Ocurred while sending the email - ${error?.message}`})
-        }else{
-          console.log('Resend otp Email sent: ' +info.response)
-        }
-      })
+      await transporter.sendMail(currentMailOptions)
 
 
     }),
@@ -346,9 +337,10 @@ export const usersRouter = createTRPCRouter({
       });
 
       const token = await encryptJWT({id: isUserPresent.id}, JWT_EXPIRATION)
+      const nameToken = encryptHs256SignJWT({name: isUserPresent.name}, JWT_EXPIRATION)
       res.setHeader('Set-Cookie', cookie.serialize(COOKIE_NAME, token, cookieOptions))
 
-      return {token}
+      return {token, nameToken}
 
     }else{
       throw new TRPCError({code: 'INTERNAL_SERVER_ERROR'})

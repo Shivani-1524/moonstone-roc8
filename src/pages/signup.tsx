@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react'
-import FormField from '~/components/FormField'
-import Navbar from '~/components/Navbar'
-import OtpInput from '~/components/OtpInput';
+import React, { useState, useEffect } from 'react';
+import FormField from '~/components/FormField';
+import Navbar from '~/components/Navbar';
 import { createUserSchema } from '~/types';
 import { api } from '~/utils/api';
 import { validateForm, encryptDataRSA, PasswordRegex, formatTimerMessage } from '~/helpers';
-// import { redirect } from 'next/navigation';
 import { useRouter } from 'next/navigation'
 import {toast} from "react-toastify";
+import { deleteCookie } from 'cookies-next';
 
 const Signup = () => {
   const router = useRouter()
@@ -28,7 +27,7 @@ const Signup = () => {
     const [submitErrors, setSubmitErrors] = useState("")
     const [signupFormErrors, setSignupFormErrors] = useState({})
     const {mutate : signupMutate, isPending} = api.user.createUser.useMutation({
-      onSuccess(data, variables, context) {
+      onSuccess(data) {
         const {otpToken} = data
         router.push(`/auth/${otpToken}`)
         toast.success("OTP sent, please check your email for an OTP code")
@@ -52,7 +51,7 @@ const Signup = () => {
     
   const handleFormChange = (e:React.ChangeEvent<HTMLInputElement>) => {
     const {name, value} = e.target;
-    setSignupFormValues(prev => ({...prev, [name]: value.trim()}))
+    setSignupFormValues(prev => ({...prev, [name]: value}))
   }
 
   const handleSubmit = () => {
@@ -86,6 +85,10 @@ const Signup = () => {
       setFormSubmit(false)
     }
   },[signupFormErrors, formSubmit])
+
+  useEffect(()=>{
+    deleteCookie("name-token")
+  },[])
 
 
 
