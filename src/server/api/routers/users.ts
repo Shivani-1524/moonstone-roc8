@@ -150,7 +150,7 @@ export const usersRouter = createTRPCRouter({
         },
       });
 
-      if(!isUserPresent){
+      if(!isUserPresent || !isUserPresent?.emailVerified){
         throw new TRPCError({code: 'UNAUTHORIZED', message: "Looks like you are not registered yet. Please sign up!"})
       }
 

@@ -1,16 +1,14 @@
-import React, {useEffect, useState, FC} from 'react'
+import React, {useEffect, useState} from 'react'
 import Navbar from '~/components/Navbar'
 import OtpInput from '~/components/OtpInput'
-import { idSchema } from '~/types'
 import { api } from '~/utils/api'
 import { useRouter } from 'next/router';
-import { redirect } from 'next/navigation';
 import jwt from 'jsonwebtoken';
 import { encryptDataRSA, formatTimerMessage } from '~/helpers'
 import { setToken } from '~/utils/api'
 import {toast} from "react-toastify";
-import { setCookie } from 'cookies-next';
-import { deleteCookie } from 'cookies-next';
+import { setCookie, deleteCookie } from 'cookies-next';
+
 
 interface EmailJwtPayload {
   email: string
@@ -27,12 +25,14 @@ const OtpPage = () => {
   const [userEmail, setUserEmail] = useState("")
 
   const {mutate : otpVerifyMutate, isPending} = api.user.verifyOtp.useMutation({
-      onSuccess(data, variables, context) {
+      onSuccess(data) {
         setToken(data?.token)
         setCookie("name-token",data?.nameToken)
-        router.push("/").catch(e => toast.error("Invalid or expired token"))
+        router.push("/").catch(e => {
+          
+          toast.error("Invalid or expired token")})
       },
-      onError(error, code){
+      onError(error){
         const errMessage = error.message;
         if(errMessage?.includes("UTCTIMER")){
           toast.error(formatTimerMessage(errMessage))
