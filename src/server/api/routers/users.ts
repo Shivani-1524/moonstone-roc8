@@ -263,8 +263,13 @@ export const usersRouter = createTRPCRouter({
   verifyOtp: publicProcedure
   .input(otpVerifySchema)
   .mutation(async ({input, ctx}) => {
-    const {otp, token} = input
-    const {email} = jwt.decode(token) as EmailJwtPayload
+    const {otp, token} = input;
+
+    const result = jwt.decode(token) as EmailJwtPayload
+    if(!result){
+      throw new TRPCError({code: "UNAUTHORIZED", message: "invalid token, please sighnup again"})
+    }
+    const {email} = result
     const {res} = ctx
     
     const isUserPresent = await ctx.db.user.findUnique({

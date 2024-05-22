@@ -45,7 +45,7 @@ const OtpPage = () => {
     const handleOtpVerify = () => {
       if(!tokenId) return Error("Token Not Found")
       const otpValue = otp.join('')
-      if(otpValue.length !== 8) return toast.error("Invalid OTP")
+      if(otpValue.trim().length !== 8) return toast.error("Invalid OTP")
       const encryptedOtp = encryptDataRSA(otpValue)
       otpVerifyMutate({
         token: tokenId,
@@ -76,7 +76,7 @@ const OtpPage = () => {
       }
        setUserEmail(obscureEmail(decoded.email))
       }catch(err){
-        toast.error("Please signup again, your token has expired")
+        toast.error("Please signup again, your token is invalid")
         router.push('/signup').catch(e => toast.error("Error while redirecting"))
       }
     }

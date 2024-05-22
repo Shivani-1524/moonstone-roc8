@@ -9,14 +9,18 @@ const generateFakeCategories = () => ({
 });
 
 const seedDatabase = async () => {
-  const categories = Array.from({length: 100}, generateFakeCategories)
-  for(const ctg of categories){
-    await db.category.create({
-      data: ctg
-    })
+  const existingCategoriesCount = await db.category.count();
+  if(existingCategoriesCount === 0){
+    const categories = Array.from({length: 100}, generateFakeCategories)
+    for(const ctg of categories){
+      await db.category.create({
+        data: ctg
+      })
+    }
+    console.log('Database seeded successfully');
+  }else{
+    console.log("Database already contains data")
   }
-
-  console.log('Database seeded successfully');
 }
 
 seedDatabase()
