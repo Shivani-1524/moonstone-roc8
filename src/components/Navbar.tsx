@@ -3,15 +3,15 @@ import { MagnifyingGlass, ShoppingCartSimple, CaretLeft, CaretRight } from "@pho
 import { useRouter } from 'next/navigation';
 import { api } from '~/utils/api';
 import {toast} from 'react-toastify';
-import { getCookies, deleteCookie, getCookie } from 'cookies-next';
+import { deleteCookie, getCookie } from 'cookies-next';
 import jwt from 'jsonwebtoken';
-import { decode } from 'punycode';
 import { NameJwtPayload } from '~/auth';
-
+import Carousel from './Carousel';
 
 const Navbar = () => {
   const router = useRouter();
   const [name, setName] = useState("John")
+
 
   const {mutate : loginMutate, isPending} = api.user.logoutUser.useMutation({
     onSuccess(data, variables, context) {
@@ -36,6 +36,8 @@ const Navbar = () => {
     const decoded = jwt.decode(userNameCookie) as NameJwtPayload;
     setName(decoded.name ?? "John")
   }
+
+
 
   useEffect(()=>{
     getCurrentCookie()
@@ -64,11 +66,7 @@ const Navbar = () => {
           </div>
         </div>
         </div>
-        <div className="flex bg-light-grey h-36 gap-5 justify-center items-center">
-        <CaretLeft size={10} />
-        <p className="text-sm font-medium">Get 10% off on business sign up</p>
-        <CaretRight size={10} />
-        </div>
+        <Carousel />
     </div>
   )
 }
