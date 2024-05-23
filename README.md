@@ -12,6 +12,7 @@ This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3
 - **Timer to Prevent Frequent OTP Generation:** <br />
  A timer mechanism restricts the generation of OTPs to prevent frequent requests from the same user, effectively thwarting brute-force attacks.
 - **Login Attempt Lockout:** <br />  If a user inputs incorrect OTP or password values more than five consecutive times, a 5-minute lockout timer is triggered, further securing against brute-force attacks.
+- **Seeders for the DB:** <br />  the database is ensured to have 100 categories while deploying the first time.
 
 
 ## What's next? How do I make an app with this?
