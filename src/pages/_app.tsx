@@ -21,7 +21,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
       </Head>
       <ToastContainer
           position="top-right"
-          autoClose={8000}
+          autoClose={15000}
           newestOnTop={false}
           closeOnClick
           rtl={false}
