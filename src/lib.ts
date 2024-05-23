@@ -2,16 +2,14 @@ import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { redirect } from 'next/navigation'
 import {encryptJWT, decryptJWT, UserJwtPayload} from "~/auth"
-import { setToken } from "./utils/api";
-import { COOKIE_NAME, cookieOptions } from "./server/api/utils/constants";
+// import { setToken } from "./utils/api";
+import { COOKIE_NAME, cookieOptions, JWT_EXPIRATION } from "./server/api/utils/constants";
 
 
 export async function updateSession(request: NextRequest) {
   try {
     const session = request.cookies.get(COOKIE_NAME)?.value;
-    if (request.nextUrl.pathname.startsWith('/login') && !session) {
-      return;
-    }
+
     if (!session) {
       return NextResponse.redirect(new URL('/login', request.url));
     }
@@ -21,12 +19,8 @@ export async function updateSession(request: NextRequest) {
       throw new Error("Failed to parse session");
     }
 
-    if (request.nextUrl.pathname.startsWith('/login') && parsed?.id) {
-      return NextResponse.redirect(new URL('/', request.url));
-    }
-
-    const token = await encryptJWT({id: parsed?.id}, "24 hrs");
-    setToken(token.toString());
+    const token = await encryptJWT({id: parsed?.id}, JWT_EXPIRATION);
+    // setToken(token.toString());
 
     const response = NextResponse.next();
     response.cookies.set(COOKIE_NAME, token, cookieOptions);

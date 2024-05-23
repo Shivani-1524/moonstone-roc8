@@ -5,7 +5,7 @@ import { api } from '~/utils/api'
 import { useRouter } from 'next/router';
 import jwt from 'jsonwebtoken';
 import { encryptDataRSA, formatTimerMessage } from '~/helpers'
-import { setToken } from '~/utils/api'
+// import { setToken } from '~/utils/api'
 import {toast} from "react-toastify";
 import { setCookie, deleteCookie } from 'cookies-next';
 
@@ -26,7 +26,7 @@ const OtpPage = () => {
 
   const {mutate : otpVerifyMutate, isPending} = api.user.verifyOtp.useMutation({
       onSuccess(data) {
-        setToken(data?.token)
+        // setToken(data?.token)
         setCookie("name-token",data?.nameToken)
         router.push("/").catch(e => {
           

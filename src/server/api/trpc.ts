@@ -80,32 +80,41 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
 });
 
 const isAuthed = t.middleware(async ({ctx, next})=>{
-  const {req, db} = ctx
-  const cookies = req.headers.cookie;
-  if(!cookies){
-    throw new TRPCError({code: 'UNAUTHORIZED', message: "invalid authorisation token"})
-  }
-    const token = cookie.parse(cookies)[COOKIE_NAME] ?? null;
-    if(!token){
+  try{
+    const {req, db} = ctx
+    const cookies = req.headers.cookie;
+    if(!cookies){
       throw new TRPCError({code: 'UNAUTHORIZED', message: "invalid authorisation token"})
     }
-    
-  const {id} = await decryptJWT(token)
-
-  const foundUser = await db.user.findUnique({
-    where:{
-      id: id
-    }
-  })
-  if(!foundUser) throw new TRPCError({code: 'UNAUTHORIZED', message: "user not found"})
-
-  return next({
-    ctx: {
-      user:{
-        userId: id
+      const token = cookie.parse(cookies)[COOKIE_NAME] ?? null;
+      if(!token){
+        throw new TRPCError({code: 'UNAUTHORIZED', message: "invalid authorisation token"})
       }
+      
+    const decryptedToken = await decryptJWT(token)
+    
+    if(!decryptedToken){
+      throw new TRPCError({code: 'UNAUTHORIZED', message: "invalid authorisation token"})
     }
-  })
+  
+    const foundUser = await db.user.findUnique({
+      where:{
+        id: decryptedToken?.id
+      }
+    })
+    if(!foundUser) throw new TRPCError({code: 'UNAUTHORIZED', message: "user not found"})
+  
+    return next({
+      ctx: {
+        user:{
+          userId: decryptedToken?.id
+        }
+      }
+    })
+  }catch(err){
+    throw new TRPCError({code: 'UNAUTHORIZED', message: "token expired, please login"})
+  }
+ 
   // return next()
 })
 

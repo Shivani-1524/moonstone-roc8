@@ -5,6 +5,7 @@ import { StaticImageData } from 'next/image';
 import type { Category } from "../types";
 import { api } from '~/utils/api';
 import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 
 type CtgProps = {
     category: Category
@@ -12,11 +13,14 @@ type CtgProps = {
 
 const UserInterest = ({category}: CtgProps) => {
     const {title, isInterested, id : categoryId} = category
+    const router = useRouter()
     const [checkedValue, setCheckedValue] = useState<boolean>(isInterested ?? false)
     const updateCtgs = api.category.updateCategoryInterest.useMutation({
-        onError(error ) {
-            console.log(error, "error occured ctgs update")
-            toast.error(`Error: ${error.message}`);
+        onError(error,  ) {
+            if(error?.data?.code === "UNAUTHORIZED"){
+                router.push('/login')
+            }
+            toast.error(`Error: ${error.message} `);
           }
     });
 
@@ -28,7 +32,6 @@ const UserInterest = ({category}: CtgProps) => {
             })
         }catch(e){
             console.log(e, "error occured ctgs update")
-            toast.error(`Error occured while updating interests`);
         }
     }
 

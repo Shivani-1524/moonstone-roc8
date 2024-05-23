@@ -18,7 +18,9 @@ import {
   OTP_RESEND_DELAY_MINUTES,
   JWT_EMAIL_VERIFICATION_EXPIRY,
   JWT_EXPIRATION,
-  COOKIE_NAME
+  COOKIE_NAME,
+  TIMER_5_MIN,
+  ATTEMPTS_5_COUNT
 } from "../utils/constants";
 import { transporter, mailOptions } from "../utils/helpers";
 
@@ -145,7 +147,7 @@ export const usersRouter = createTRPCRouter({
 
       const now = new Date()
 
-      if(isUserPresent.passwordAttemptCounter >= 5 && isUserPresent.unblocksUserAt > now){
+      if(isUserPresent.passwordAttemptCounter >= TIMER_5_MIN && isUserPresent.unblocksUserAt > now){
         
         throw new TRPCError({code: 'UNAUTHORIZED', message: `Please wait for the timer to end. trying again after UTCTIMER ${isUserPresent.unblocksUserAt.toString()}`})
       }
@@ -153,7 +155,7 @@ export const usersRouter = createTRPCRouter({
       const decryptedPassword = decryptDataRSA(password)
       const isMatch = await bcrypt.compare(decryptedPassword, isUserPresent.password);
 
-      if (!isMatch && isUserPresent.passwordAttemptCounter < 5 ) {
+      if (!isMatch && isUserPresent.passwordAttemptCounter < ATTEMPTS_5_COUNT ) {
         await ctx.db.user.update({
           where:{
             email: email
@@ -168,8 +170,8 @@ export const usersRouter = createTRPCRouter({
 
       }
       
-      else if (!isMatch && isUserPresent.passwordAttemptCounter >= 5 ) {
-       const timer = addMinutesToDate(now, 5)
+      else if (!isMatch && isUserPresent.passwordAttemptCounter >= ATTEMPTS_5_COUNT ) {
+       const timer = addMinutesToDate(now, TIMER_5_MIN)
         await ctx.db.user.update({
           where:{
             email: email
@@ -194,10 +196,10 @@ export const usersRouter = createTRPCRouter({
         },
       });
       const token = await encryptJWT({id: isUserPresent.id}, JWT_EXPIRATION)
-      const nameToken = encryptHs256SignJWT({name: isUserPresent.name}, JWT_EXPIRATION)
+      const nameToken = encryptHs256SignJWT({name: isUserPresent.name},  JWT_EMAIL_VERIFICATION_EXPIRY)
       ctx.res.setHeader('Set-Cookie', cookie.serialize(COOKIE_NAME, token,  cookieOptions))
 
-      return {nameToken, token}
+      return {nameToken}
       
     }),
     
@@ -282,7 +284,7 @@ export const usersRouter = createTRPCRouter({
     }
 
     const now = new Date()
-    if(isUserPresent?.otpAttemptCounter >= 5 && isUserPresent.otpAttemptTimer > now ){
+    if(isUserPresent?.otpAttemptCounter >= ATTEMPTS_5_COUNT && isUserPresent.otpAttemptTimer > now ){
       throw new TRPCError({code:"UNAUTHORIZED", message: `You have attempted to enter your OTP for more than 5 times, please try again after UTCTIMER ${isUserPresent.otpAttemptTimer.toString()}`})
     }
     else if(isUserPresent?.otpExpiresAt < now){
@@ -292,7 +294,7 @@ export const usersRouter = createTRPCRouter({
     const decryptedOtp = decryptDataRSA(otp)
     const isOtpMatch = await bcrypt.compare(decryptedOtp, isUserPresent?.otp);
 
-    if (!isOtpMatch && isUserPresent?.otpAttemptCounter < 5 ) {
+    if (!isOtpMatch && isUserPresent?.otpAttemptCounter < ATTEMPTS_5_COUNT ) {
       await ctx.db.user.update({
         where:{
           email: email
@@ -305,8 +307,8 @@ export const usersRouter = createTRPCRouter({
       });
       throw new TRPCError({code: "UNAUTHORIZED", message: "Incorrect OTP. please try again!"})
     }
-    else if(!isOtpMatch && isUserPresent?.otpAttemptCounter >= 5){
-      const timer = addMinutesToDate(now, 5)
+    else if(!isOtpMatch && isUserPresent?.otpAttemptCounter >= ATTEMPTS_5_COUNT){
+      const timer = addMinutesToDate(now, TIMER_5_MIN)
       await ctx.db.user.update({
         where:{
           email: email
@@ -331,10 +333,10 @@ export const usersRouter = createTRPCRouter({
       });
 
       const token = await encryptJWT({id: isUserPresent.id}, JWT_EXPIRATION)
-      const nameToken = encryptHs256SignJWT({name: isUserPresent.name}, JWT_EXPIRATION)
+      const nameToken = encryptHs256SignJWT({name: isUserPresent.name},  JWT_EMAIL_VERIFICATION_EXPIRY)
       res.setHeader('Set-Cookie', cookie.serialize(COOKIE_NAME, token, cookieOptions))
 
-      return {token, nameToken}
+      return {nameToken}
 
     }else{
       throw new TRPCError({code: 'INTERNAL_SERVER_ERROR'})

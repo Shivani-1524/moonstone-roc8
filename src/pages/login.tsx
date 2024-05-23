@@ -5,7 +5,7 @@ import { api } from '~/utils/api';
 import { encryptDataRSA, validateForm, formatTimerMessage } from '~/helpers';
 import { loginUserSchema } from '~/types';
 import { useRouter } from 'next/navigation';
-import { setToken } from '~/utils/api';
+// import { setToken } from '~/utils/api';
 import {toast} from "react-toastify";
 import { deleteCookie, setCookie } from 'cookies-next';
 
@@ -34,9 +34,9 @@ const [submitErrors, setSubmitErrors] = useState("")
   const [loginFormErrors, setLoginFormErrors] = useState({})
     const {mutate : loginMutate, isPending} = api.user.loginUser.useMutation({
     onSuccess(data) {
-      setToken(data?.token)
+      // setToken(data?.token)
       setCookie("name-token",data?.nameToken)
-      router.push('/')
+      router.replace('/')
     },
     onError(error){
       const errMessage = error.message;

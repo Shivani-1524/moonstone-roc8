@@ -19,9 +19,9 @@ export const getBaseUrl = () => {
 
 let token: string;
 
-export const setToken = (newToken: string) => {
-  token = newToken
-}
+// export const setToken = (newToken: string) => {
+//   token = newToken
+// }
 
 /** A set of type-safe react-query hooks for your tRPC API. */
 export const api = createTRPCNext<AppRouter>({
@@ -46,11 +46,11 @@ export const api = createTRPCNext<AppRouter>({
            */
           transformer: superjson,
           url: `${getBaseUrl()}/api/trpc`,
-          headers(){
-            return {
-              Authorization: `Bearer ${token}`,
-            }
-          }
+          // headers(){
+          //   return {
+          //     Authorization: `Bearer ${token}`,
+          //   }
+          // }
         }),
       ],
     };
